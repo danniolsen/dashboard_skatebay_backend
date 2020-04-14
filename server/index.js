@@ -3,7 +3,9 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const admin = require("firebase-admin");
-//const { Auth } = require("../services/auth");
+require("dotenv").config();
+const clientData = require("./db");
+const { Users } = require("../services/users");
 const app = express();
 const PORT = process.env.PORT || 8080;
 
@@ -18,6 +20,9 @@ app.use("*", function(req, res, next) {
   next();
 });
 app.options("*", cors());
+
+// endpoint access
+Users(app, admin, clientData);
 
 // server is running
 app.listen(PORT, () => {
