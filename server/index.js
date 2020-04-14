@@ -5,7 +5,7 @@ const cors = require("cors");
 const admin = require("firebase-admin");
 require("dotenv").config();
 const clientData = require("./db");
-const { Users } = require("../services/users");
+const { Users, Spots } = require("../services/");
 const app = express();
 const PORT = process.env.PORT || 8080;
 
@@ -23,6 +23,7 @@ app.options("*", cors());
 
 // endpoint access
 Users(app, admin, clientData);
+Spots(app, admin, clientData);
 
 // server is running
 app.listen(PORT, () => {

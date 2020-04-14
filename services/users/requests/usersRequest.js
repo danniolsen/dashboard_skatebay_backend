@@ -1,5 +1,4 @@
 "use-strict";
-
 /*template
 const query = {
   name: "",
