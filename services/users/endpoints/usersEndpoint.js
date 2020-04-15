@@ -9,52 +9,73 @@ const VerifyIdToken = require("../../../auth/FirebaseVerification");
 
 const Users = (app, admin, clientData) => {
   // count new users by time periode interval in days
+
   app.post("/getusers", async (req, res) => {
-    const { interval, idToken } = req.body;
+    const idToken = req.header("authorization");
+    const { interval } = req.body;
+    const query = await GetAvgUserByInterval(interval);
     const client = new Client(clientData);
     client.connect();
+
+    let response = { data: [], msg: "" };
+
     const verifiedToken = VerifyIdToken(idToken).then(success => {
-      if (!success) {
-        client.end();
+      if (success) {
+        doRequest(query);
+      } else {
+        response.msg = "Token not accepted";
+        res.status(400).json(response);
       }
     });
 
-    let query = await GetAvgUserByInterval(interval);
-    return client
-      .query(query)
-      .then(result => {
-        res.status(200).json(result.rows);
-        client.end();
-      })
-      .catch(e => {
-        res.status(400).json([]);
-        client.end();
-      });
+    const doRequest = query => {
+      return client
+        .query(query)
+        .then(result => {
+          response.data = result.rows;
+          res.status(200).json(response);
+          client.end();
+        })
+        .catch(e => {
+          response.msg = "Something went wrong";
+          res.status(400).json(response);
+          client.end();
+        });
+    };
   });
 
   // count users by auth provider. google / facebook
   app.post("/getusersbyprovider", async (req, res) => {
-    const { idToken } = req.body;
+    const idToken = req.header("authorization");
+    let query = await GetUserByProvider();
     const client = new Client(clientData);
     client.connect();
+
+    let response = { data: [], msg: "" };
+
     const verifiedToken = VerifyIdToken(idToken).then(success => {
-      if (!success) {
-        client.end();
+      if (success) {
+        doRequest(query);
+      } else {
+        response.msg = "Token not accepted";
+        res.status(400).json(response);
       }
     });
 
-    let query = await GetUserByProvider();
-
-    return client
-      .query(query)
-      .then(result => {
-        res.status(200).json(result.rows);
-        client.end();
-      })
-      .catch(e => {
-        res.status(400).json([]);
-        client.end();
-      });
+    const doRequest = query => {
+      return client
+        .query(query)
+        .then(result => {
+          response.data = result.rows;
+          res.status(200).json(response);
+          client.end();
+        })
+        .catch(e => {
+          response.msg = "Something went wrong";
+          res.status(400).json(response);
+          client.end();
+        });
+    };
   });
 };
 

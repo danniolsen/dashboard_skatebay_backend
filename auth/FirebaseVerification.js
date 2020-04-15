@@ -2,9 +2,10 @@
 const admin = require("firebase-admin");
 
 const VerifyIdToken = idToken => {
+  let token = idToken.replace("Bearer ", "");
   return admin
     .auth()
-    .verifyIdToken(idToken)
+    .verifyIdToken(token)
     .then(function(decodedToken) {
       return true;
     })
