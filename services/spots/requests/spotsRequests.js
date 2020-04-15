@@ -37,8 +37,18 @@ const TotalUsersCount = () => {
   return query;
 };
 
+const PendingSpots = () => {
+  const query = {
+    name: "get-pending-spots",
+    text: `SELECT * FROM spots WHERE pending = true`,
+    values: []
+  };
+  return query;
+};
+
 module.exports = {
   TotalSpotsCount,
   NewSpotsByTime,
-  TotalUsersCount
+  TotalUsersCount,
+  PendingSpots
 };
