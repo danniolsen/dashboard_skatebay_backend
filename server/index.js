@@ -8,6 +8,7 @@ const clientData = require("./db");
 const { Users, Spots } = require("../services/");
 const app = express();
 const PORT = process.env.PORT || 8080;
+const serviceAccount = require("./config/firebaseKey.json");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -20,6 +21,11 @@ app.use("*", function(req, res, next) {
   next();
 });
 app.options("*", cors());
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://skatebay-f8803.firebaseio.com"
+});
 
 // endpoint access
 Users(app, admin, clientData);
