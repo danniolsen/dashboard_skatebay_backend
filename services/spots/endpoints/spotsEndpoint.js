@@ -6,13 +6,19 @@ const {
   NewSpotsByTime,
   TotalUsersCount
 } = require("../requests/spotsRequests");
+const VerifyIdToken = require("../../../auth/FirebaseVerification");
 
 const Spots = (app, admin, clientData) => {
   // count total spots
   app.post("/counttotalspots", async (req, res) => {
-    const {} = req.body;
+    const { idToken } = req.body;
     const client = new Client(clientData);
     client.connect();
+    const verifiedToken = VerifyIdToken(idToken).then(success => {
+      if (!success) {
+        client.end();
+      }
+    });
 
     const query = await TotalSpotsCount();
     return client
@@ -29,10 +35,14 @@ const Spots = (app, admin, clientData) => {
 
   // count new spots by time interval
   app.post("/countspotsbyinterval", async (req, res) => {
-    const { interval } = req.body;
+    const { interval, idToken } = req.body;
     const client = new Client(clientData);
     client.connect();
-
+    const verifiedToken = VerifyIdToken(idToken).then(success => {
+      if (!success) {
+        client.end();
+      }
+    });
     const query = await NewSpotsByTime(interval);
     return client
       .query(query)
@@ -48,8 +58,14 @@ const Spots = (app, admin, clientData) => {
 
   // get avrage amount of spots posted by users
   app.post("/avgspotsbyusers", async (req, res) => {
+    const { idToken } = req.body;
     const client = new Client(clientData);
     client.connect();
+    const verifiedToken = VerifyIdToken(idToken).then(success => {
+      if (!success) {
+        client.end();
+      }
+    });
 
     const countUsers = await TotalUsersCount();
     const countSpots = await TotalSpotsCount();

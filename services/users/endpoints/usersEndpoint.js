@@ -5,13 +5,19 @@ const {
   GetAvgUserByInterval,
   GetUserByProvider
 } = require("../requests/usersRequest");
+const VerifyIdToken = require("../../../auth/FirebaseVerification");
 
 const Users = (app, admin, clientData) => {
   // count new users by time periode interval in days
   app.post("/getusers", async (req, res) => {
-    const { interval } = req.body;
+    const { interval, idToken } = req.body;
     const client = new Client(clientData);
     client.connect();
+    const verifiedToken = VerifyIdToken(idToken).then(success => {
+      if (!success) {
+        client.end();
+      }
+    });
 
     let query = await GetAvgUserByInterval(interval);
     return client
@@ -28,8 +34,14 @@ const Users = (app, admin, clientData) => {
 
   // count users by auth provider. google / facebook
   app.post("/getusersbyprovider", async (req, res) => {
+    const { idToken } = req.body;
     const client = new Client(clientData);
     client.connect();
+    const verifiedToken = VerifyIdToken(idToken).then(success => {
+      if (!success) {
+        client.end();
+      }
+    });
 
     let query = await GetUserByProvider();
 
