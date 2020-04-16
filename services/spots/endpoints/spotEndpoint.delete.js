@@ -25,7 +25,7 @@ const SpotsDelete = (app, clientData, Client) => {
       return client
         .query(query)
         .then(result => {
-          response.data = result.rows;
+          response.msg = "Spot has been deleted";
           res.status(200).json(response);
           client.end();
         })
