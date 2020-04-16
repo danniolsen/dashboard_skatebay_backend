@@ -4,8 +4,9 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const admin = require("firebase-admin");
 require("dotenv").config();
+const { Client } = require("pg");
 const clientData = require("./db");
-const { Users, Spots } = require("../services/");
+const { Users, Spots, ModerationGet } = require("../services/");
 const app = express();
 const PORT = process.env.PORT || 8080;
 const serviceAccount = require("./config/firebaseKey.json");
@@ -28,8 +29,9 @@ admin.initializeApp({
 });
 
 // endpoint access
-Users(app, admin, clientData);
-Spots(app, admin, clientData);
+Users(app, admin, clientData, Client);
+Spots(app, admin, clientData, Client);
+ModerationGet(app, admin, clientData, Client);
 
 // server is running
 app.listen(PORT, () => {

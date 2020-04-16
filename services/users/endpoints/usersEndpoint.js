@@ -1,13 +1,11 @@
 "use-strict";
-const client = require("../../../server/db");
-const { Client } = require("pg");
 const {
   GetAvgUserByInterval,
   GetUserByProvider
 } = require("../requests/usersRequest");
 const VerifyIdToken = require("../../../auth/FirebaseVerification");
 
-const Users = (app, admin, clientData) => {
+const Users = (app, admin, clientData, Client) => {
   // count new users by time periode interval in days
 
   app.post("/getusers", async (req, res) => {
@@ -33,6 +31,7 @@ const Users = (app, admin, clientData) => {
         .query(query)
         .then(result => {
           response.data = result.rows;
+          response.msg = "Success";
           res.status(200).json(response);
           client.end();
         })
@@ -67,6 +66,7 @@ const Users = (app, admin, clientData) => {
         .query(query)
         .then(result => {
           response.data = result.rows;
+          response.msg = "Success";
           res.status(200).json(response);
           client.end();
         })
