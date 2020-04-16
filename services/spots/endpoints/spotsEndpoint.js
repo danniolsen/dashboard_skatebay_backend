@@ -1,15 +1,13 @@
 "use-strict";
-const client = require("../../../server/db");
-const { Client } = require("pg");
 const {
   TotalSpotsCount,
   NewSpotsByTime,
   TotalUsersCount,
   PendingSpots
 } = require("../requests/spotsRequests");
-const VerifyIdToken = require("../../../auth/FirebaseVerification");
+const VerifyIdToken = require("../../helpers/FirebaseVerification");
 
-const Spots = (app, admin, clientData) => {
+const Spots = (app, admin, clientData, Client) => {
   // count total spots
   app.post("/counttotalspots", async (req, res, next) => {
     const idToken = req.header("authorization");
@@ -33,6 +31,7 @@ const Spots = (app, admin, clientData) => {
         .query(query)
         .then(result => {
           response.data = result.rows;
+          response.msg = "Success";
           res.status(200).json(response);
           client.end();
         })
@@ -68,6 +67,7 @@ const Spots = (app, admin, clientData) => {
         .query(query)
         .then(result => {
           response.data = result.rows;
+          response.msg = "Success";
           res.status(200).json(response);
           client.end();
         })
@@ -86,7 +86,7 @@ const Spots = (app, admin, clientData) => {
     const client = new Client(clientData);
     client.connect();
 
-    let response = { data: [], msg: "" };
+    let response = { data: 0, msg: "" };
     try {
       const verifiedToken = VerifyIdToken(idToken).then(success => {
         if (success) {
@@ -110,7 +110,9 @@ const Spots = (app, admin, clientData) => {
             .query(countSpots)
             .then(spotRes => {
               let avg = spotRes.rows[0].totalspots / result.rows[0].totalusers;
-              res.status(200).json({ avg: avg });
+              response.data = avg;
+              response.msg = "Success";
+              res.status(200).json(response);
               client.end();
             })
             .catch(err => {
@@ -153,6 +155,7 @@ const Spots = (app, admin, clientData) => {
         .query(query)
         .then(result => {
           response.data = result.rows;
+          response.msg = "Success";
           res.status(200).json(response);
           client.end();
         })
