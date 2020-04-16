@@ -6,7 +6,13 @@ const admin = require("firebase-admin");
 require("dotenv").config();
 const { Client } = require("pg");
 const clientData = require("./db");
-const { Users, Spots, SpotReportsGet, SpotsDelete } = require("../services/");
+const {
+  Users,
+  Spots,
+  SpotReportsGet,
+  SpotsDelete,
+  SpotReportsUpdate
+} = require("../services/");
 const app = express();
 const PORT = process.env.PORT || 8080;
 const serviceAccount = require("./config/firebaseKey.json");
@@ -33,6 +39,7 @@ Users(app, clientData, Client);
 Spots(app, clientData, Client);
 SpotReportsGet(app, clientData, Client);
 SpotsDelete(app, clientData, Client);
+SpotReportsUpdate(app, clientData, Client);
 
 // server is running
 app.listen(PORT, () => {

@@ -7,12 +7,11 @@ const query = {
 }
 return query;
 */
-
-const ResolveSpotReport = spot_id => {
+const ResolveSpotReport = report_id => {
   const query = {
     name: "resolve-spot-report",
-    text: `select * from reports`,
-    values: [spot_id]
+    text: `UPDATE reports SET resolved = true WHERE report_id = $1`,
+    values: [report_id]
   };
   return query;
 };
