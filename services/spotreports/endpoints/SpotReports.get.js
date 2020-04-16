@@ -1,12 +1,13 @@
 "use-strict";
-const { GetModerationSpots } = require("../requests/moderationRequests.get");
+const { GetSpotReports } = require("../requests/spotReportsRequests.get");
+const VerifyIdToken = require("../../helpers/FirebaseVerification");
 
-const ModerationGet = (app, admin, clientData) => {
-  // get list of moderation reports on spots
-  app.post("/moderationspots", async (req, res) => {
+const SpotReportsGet = (app, admin, clientData, Client) => {
+  // get list of spot reports
+  app.post("/spotreports", async (req, res) => {
     const { page } = req.body;
     const idToken = req.header("authorization");
-    const query = await GetModerationSpots(page);
+    const queryGetReports = await GetSpotReports(page);
     const client = new Client(clientData);
     client.connect();
 
@@ -14,20 +15,20 @@ const ModerationGet = (app, admin, clientData) => {
 
     const verifiedToken = VerifyIdToken(idToken).then(success => {
       if (success) {
-        doRequest(query);
+        doRequest(queryGetReports);
       } else {
         response.msg = "Token not accepted";
         res.status(400).json(response);
       }
     });
 
-    const doRequest = query => {
+    const doRequest = queryGetReports => {
       return client
-        .query(query)
+        .query(queryGetReports)
         .then(result => {
           response.data = result.rows;
           response.msg = "Success";
-          res.status(200).json(response);
+          res.status(200).json(result.rows);
           client.end();
         })
         .catch(e => {
@@ -39,4 +40,4 @@ const ModerationGet = (app, admin, clientData) => {
   });
 };
 
-module.exports = ModerationGet;
+module.exports = SpotReportsGet;

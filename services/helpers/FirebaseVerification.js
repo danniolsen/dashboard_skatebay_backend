@@ -2,7 +2,6 @@
 const admin = require("firebase-admin");
 
 const VerifyIdToken = idToken => {
-  console.log("in id token verification");
   if (idToken === undefined) {
     return false;
   } else {

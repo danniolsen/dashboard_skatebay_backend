@@ -8,15 +8,16 @@ const query = {
 return query;
 */
 
-const GetModerationSpots = page => {
+const GetSpotReports = page => {
+  console.log(page);
   const query = {
-    name: "",
-    text: `select * from reports where resolved = false order by created_at desc limit 10`,
+    name: "get-spot-reports",
+    text: `select * from reports`,
     values: []
   };
   return query;
 };
 
 module.exports = {
-  GetModerationSpots
+  GetSpotReports
 };
