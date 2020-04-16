@@ -1,13 +1,12 @@
 "use-strict";
-const { GetSpotReports } = require("../requests/spotReportsRequests.get");
+const { DeleteSpot } = require("../requests/spotsRequests");
 const VerifyIdToken = require("../../helpers/FirebaseVerification");
 
-const SpotReportsGet = (app, clientData, Client) => {
-  // get list of spot reports
-  app.post("/spotreports", async (req, res) => {
-    const { page } = req.body;
+const SpotsDelete = (app, clientData, Client) => {
+  app.delete("/deletespot", async (req, res) => {
     const idToken = req.header("authorization");
-    const queryGetReports = await GetSpotReports(page);
+    const { spot_id } = req.body;
+    const query = await DeleteSpot(spot_id);
     const client = new Client(clientData);
     client.connect();
 
@@ -15,20 +14,19 @@ const SpotReportsGet = (app, clientData, Client) => {
 
     const verifiedToken = VerifyIdToken(idToken).then(success => {
       if (success) {
-        doRequest(queryGetReports);
+        doRequest(query);
       } else {
         response.msg = "Token not accepted";
         res.status(400).json(response);
       }
     });
 
-    const doRequest = queryGetReports => {
+    const doRequest = query => {
       return client
-        .query(queryGetReports)
+        .query(query)
         .then(result => {
           response.data = result.rows;
-          response.msg = "Success";
-          res.status(200).json(result.rows);
+          res.status(200).json(response);
           client.end();
         })
         .catch(e => {
@@ -40,4 +38,4 @@ const SpotReportsGet = (app, clientData, Client) => {
   });
 };
 
-module.exports = SpotReportsGet;
+module.exports = SpotsDelete;
