@@ -11,7 +11,7 @@ const SpotReportsUpdate = (app, clientData, Client) => {
     const client = new Client(clientData);
     client.connect();
 
-    let response = { data: [], msg: "" };
+    let response = { msg: "" };
 
     const verifiedToken = VerifyIdToken(idToken).then(success => {
       if (success) {
@@ -26,9 +26,8 @@ const SpotReportsUpdate = (app, clientData, Client) => {
       return client
         .query(queryUpdateReports)
         .then(result => {
-          response.data = result.rows;
-          response.msg = "Success";
-          res.status(200).json(result.rows);
+          response.msg = "Report has been resolved";
+          res.status(200).json(response);
           client.end();
         })
         .catch(e => {

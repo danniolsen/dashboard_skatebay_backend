@@ -30,7 +30,7 @@ const Spots = (app, clientData, Client) => {
       return client
         .query(query)
         .then(result => {
-          response.data = result.rows;
+          response.data = result.rows[0];
           response.msg = "Success";
           res.status(200).json(response);
           client.end();
