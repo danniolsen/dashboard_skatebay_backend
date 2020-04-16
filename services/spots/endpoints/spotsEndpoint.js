@@ -7,7 +7,7 @@ const {
 } = require("../requests/spotsRequests");
 const VerifyIdToken = require("../../helpers/FirebaseVerification");
 
-const Spots = (app, admin, clientData, Client) => {
+const Spots = (app, clientData, Client) => {
   // count total spots
   app.post("/counttotalspots", async (req, res, next) => {
     const idToken = req.header("authorization");

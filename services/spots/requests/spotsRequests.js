@@ -46,9 +46,19 @@ const PendingSpots = () => {
   return query;
 };
 
+const DeleteSpot = spot_id => {
+  const query = {
+    name: "delete spot by id",
+    text: `DELETE FROM spots WHERE spot_id = $1`,
+    values: [spot_id]
+  };
+  return query;
+};
+
 module.exports = {
   TotalSpotsCount,
   NewSpotsByTime,
   TotalUsersCount,
-  PendingSpots
+  PendingSpots,
+  DeleteSpot
 };

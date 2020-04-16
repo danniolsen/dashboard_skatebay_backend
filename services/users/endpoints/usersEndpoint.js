@@ -5,7 +5,7 @@ const {
 } = require("../requests/usersRequest");
 const VerifyIdToken = require("../../helpers/FirebaseVerification");
 
-const Users = (app, admin, clientData, Client) => {
+const Users = (app, clientData, Client) => {
   // count new users by time periode interval in days
   app.post("/countusers", async (req, res) => {
     const idToken = req.header("authorization");
