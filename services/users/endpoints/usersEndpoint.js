@@ -1,7 +1,8 @@
 "use-strict";
 const {
   GetAvgUserByInterval,
-  GetUserByProvider
+  GetUserByProvider,
+  CountAllUsers
 } = require("../requests/usersRequest");
 const VerifyIdToken = require("../../helpers/FirebaseVerification");
 
@@ -66,6 +67,41 @@ const Users = (app, clientData, Client) => {
         .then(result => {
           response.data = result.rows;
           response.msg = "Success";
+          res.status(200).json(response);
+          client.end();
+        })
+        .catch(e => {
+          response.msg = "Something went wrong";
+          res.status(400).json(response);
+          client.end();
+        });
+    };
+  });
+
+  // get total user count
+
+  app.post("/totaluserscount", async (req, res) => {
+    const idToken = req.header("authorization");
+    const query = await CountAllUsers();
+    const client = new Client(clientData);
+    client.connect();
+
+    let response = { data: null, msg: "" };
+
+    const verifiedToken = VerifyIdToken(idToken).then(success => {
+      if (success) {
+        doRequest(query);
+      } else {
+        response.msg = "Token not accepted";
+        res.status(400).json(response);
+      }
+    });
+
+    const doRequest = query => {
+      return client
+        .query(query)
+        .then(result => {
+          response.data = result.rows[0];
           res.status(200).json(response);
           client.end();
         })

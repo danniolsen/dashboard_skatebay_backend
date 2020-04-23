@@ -28,7 +28,17 @@ const GetUserByProvider = () => {
   return query;
 };
 
+const CountAllUsers = () => {
+  const query = {
+    name: "count-all-users",
+    text: `select count(user_id) from users;`,
+    values: []
+  };
+  return query;
+};
+
 module.exports = {
   GetAvgUserByInterval,
-  GetUserByProvider
+  GetUserByProvider,
+  CountAllUsers
 };
